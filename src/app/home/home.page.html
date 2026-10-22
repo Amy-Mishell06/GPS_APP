@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Mi Ubicación GPS </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="latitude() !== null && longitude() !== null">
+    <ion-card-header>
+      <ion-card-title>Coordenadas actuales</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Latitud:</strong> {{ latitude() }}</p>
+      <p><strong>Longitud:</strong> {{ longitude() }}</p>
+
+      <p class="enlace">
+        <a [href]="urlUbicacion()" target="_blank" rel="noopener">Ver mi ubicación en Google Maps</a>
+      </p>
+
+      <ion-button expand="block" color="success" (click)="guardarUbicacion()">
+        Guardar ubicación (.txt)
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Mi ruta</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-input
+          label="Destino (lat,lng)"
+          labelPlacement="stacked"
+          placeholder="-0.229415,-78.524581"
+          [ngModel]="destino()"
+          (ngModelChange)="destino.set($event ?? '')">
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          label="Paradas (lat,lng|lat,lng) — opcional"
+          labelPlacement="stacked"
+          placeholder="-0.201452,-78.498124|-0.220164,-78.512328"
+          [ngModel]="paradas()"
+          (ngModelChange)="paradas.set($event ?? '')">
+        </ion-input>
+      </ion-item>
+
+      <!-- 2.- Hipervínculo con la ruta -->
+      <p class="enlace" *ngIf="urlRuta() as ruta; else sinRuta">
+        <a [href]="ruta" target="_blank" rel="noopener">Ver ruta en Google Maps</a>
+      </p>
+      <ng-template #sinRuta>
+        <p class="enlace">Esperando ubicación actual y destino…</p>
+      </ng-template>
+
+      <!-- 4.- Guardar ruta en .txt -->
+      <ion-button expand="block" color="success" (click)="guardarRuta()" [disabled]="!urlRuta()">
+        Guardar ruta (.txt)
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <p *ngIf="errorMsg()">{{ errorMsg() }}</p>
+
+  <ion-button expand="block" (click)="obtenerUbicacionActual()">
+    Obtener ubicación actual
+  </ion-button>
+
+  <ion-button expand="block" (click)="iniciarSeguimiento()" [disabled]="watchId !== null">
+    Iniciar seguimiento
+  </ion-button>
+
+  <ion-button expand="block" color="medium" (click)="detenerSeguimiento()" [disabled]="watchId === null">
+    Detener seguimiento
+  </ion-button>
+</ion-content>
