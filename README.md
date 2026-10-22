@@ -96,7 +96,7 @@ Missing the following permissions in AndroidManifest.xml	Agregar los permisos de
 # Capturas
 Pantalla principal	
 
-<img width="350" height="1600" alt="image" src="https://github.com/user-attachments/assets/b8a7a401-829a-458e-8abe-8082bcafdcf4" />
+<img width="350" alt="image" src="https://github.com/user-attachments/assets/b8a7a401-829a-458e-8abe-8082bcafdcf4" />
 
 Ubicación obtenida	
 
