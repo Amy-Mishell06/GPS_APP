@@ -1,136 +1,102 @@
-# 📍 MiUbicacionAPP — Ionic + Angular + Capacitor
+GPS_APP — Ubicación, rutas y registro en .txt
 
-Aplicación móvil educativa desarrollada con **Ionic**, **Angular** y **Capacitor** para practicar el acceso a la ubicación geográfica del dispositivo.
+App móvil hecha con Ionic + Angular + Capacitor que obtiene la posición GPS del dispositivo, genera enlaces de Google Maps (ubicación y ruta) y permite guardar esos enlaces en archivos .txt.
 
-> **Nota:** El repositorio incluye `@capacitor/geolocation`. Las funciones concretas de la interfaz deben verificarse ejecutando la aplicación; este README no presupone mapas, historial ni seguimiento en segundo plano.
+Proyecto académico desarrollado a partir de la app base MiUbicacionAPP_ionic (Ing. Juan Pablo Zaldumbide, ESFOT – EPN), a la que se le agregaron las funcionalidades descritas abajo.
 
-## 🧰 Tecnologías
+¿Qué hace la app?
+#	Funcionalidad	Cómo se ve en la app
+1	Enlace a mi posición GPS	Enlace "Ver mi ubicación en Google Maps" en la tarjeta de coordenadas
+2	Enlace con mi ruta (origen, destino y paradas)	Tarjeta "Mi ruta" → enlace "Ver ruta en Google Maps"
+3	Guardar mi ubicación en .txt	Botón "Guardar ubicación (.txt)" → ubicacion.txt
+4	Guardar mi ruta en .txt	Botón "Guardar ruta (.txt)" → ruta.txt
 
-| Tecnología | Versión declarada | Uso |
-|---|---|---|
-| Ionic Angular | ^8.0.0 | Componentes e interfaz móvil |
-| Angular | ^20.0.0 | Estructura de la aplicación |
-| Capacitor | 7.4.3 | Integración con plataformas nativas |
-| Capacitor Geolocation | ^7.1.5 | Acceso a la ubicación |
-| TypeScript | ~5.8.0 | Desarrollo |
+Además conserva lo de la app base: mostrar latitud/longitud y seguimiento de la ubicación en tiempo real.
 
-## ✅ Requisitos previos
+🔗 Formato de los enlaces
 
-- Node.js y npm compatibles con Angular 20.
-- Ionic CLI (opcional, para ejecutar `ionic serve`).
-- Android Studio y SDK de Android si se desea generar una aplicación Android.
-- Dispositivo o emulador con servicios de ubicación habilitados.
+Ubicación actual
 
-## 🚀 Instalación y ejecución
+https://www.google.com/maps/@{LAT},{LNG},17z
 
-```bash
-git clone https://github.com/jzaldumbide/MiUbicacionAPP_ionic.git
-cd MiUbicacionAPP_ionic
+Ejemplo: https://www.google.com/maps/@-0.2025464,-78.4941719,17z
+
+Ruta (el origen es la ubicación actual del celular; destino y paradas se escriben en la app)
+
+https://www.google.com/maps/dir/?api=1&origin={LAT,LNG}&destination={LAT,LNG}&waypoints={LAT,LNG}%7C{LAT,LNG}
+
+Las paradas se escriben separadas por | (por ejemplo -0.201452,-78.498124|-0.220164,-78.512328) y la app las convierte a %7C en la URL.
+
+Para obtener las coordenadas de un lugar: en Google Maps haz clic derecho (o mantén presionado en el celular) sobre el sitio y copia los números que aparecen.
+
+¿Dónde se guardan los .txt?
+
+Cada vez que se presiona un botón de guardar se agrega una línea con fecha, hora y enlace, así el archivo funciona como historial:
+
+22/10/2026, 8:45:10 - https://www.google.com/maps/@-0.2101,-78.4889,17z
+Plataforma	Ubicación del archivo
+Android	Carpeta Documentos del teléfono (ubicacion.txt, ruta.txt)
+Navegador (ionic serve)	Se descarga en la carpeta Descargas
+Tecnologías
+Ionic 8 + Angular 20 (componentes standalone y signals)
+Capacitor 7
+@capacitor/geolocation → posición GPS
+@capacitor/filesystem → escritura de archivos .txt
+TypeScript
+Archivos principales
+text
+src/app/
+├── home/
+│   ├── home.page.html      # Interfaz: coordenadas, enlaces, tarjeta "Mi ruta" y botones
+│   ├── home.page.ts        # Lógica: arma las URL y llama al guardado
+│   └── home.page.scss      # Estilos de los enlaces
+└── services/
+    ├── location.ts         # Permisos y lectura del GPS (con reintento si se agota el tiempo)
+    └── file-saver.ts       # Guarda el .txt (Filesystem en Android / descarga en navegador)
+Cómo ejecutarla
+En la computadora
+bash
+git clone https://github.com/Amy-Mishell06/GPS_APP.git
+cd GPS_APP
 npm install
-npm start
-```
-
-Abrir la dirección local que muestre Angular (normalmente `http://localhost:4200`). Alternativamente:
-
-```bash
-npm install -g @ionic/cli
 ionic serve
-```
 
-## 📱 Ejecución en Android
+En PC la ubicación depende de Windows: activa Configuración → Privacidad y seguridad → Ubicación y permite la ubicación al navegador. Sin Wi-Fi puede aparecer "Timeout expired".
 
-La carpeta nativa `android/` no aparece en la raíz publicada del repositorio, por lo que debe generarse antes de compilar.
-
-```bash
-npm install @capacitor/android@^7
-npm run build
+En un celular Android
+bash
+npm install @capacitor/android@7.4.3
+ionic build
 npx cap add android
 npx cap sync android
 npx cap open android
-```
 
-En Android Studio, seleccionar un emulador o dispositivo y ejecutar la aplicación. Para generar un APK de prueba, usar **Build > Build Bundle(s) / APK(s) > Build APK(s)**. Si se modifica el código web, repetir `npm run build && npx cap sync android`.
+En Android Studio, seleccionar el celular conectado por USB (con Depuración USB activada) y presionar ▶️.
 
-## 🧭 Geolocalización
+Permisos necesarios — en android/app/src/main/AndroidManifest.xml, antes de </manifest>:
 
-El proyecto declara la dependencia `@capacitor/geolocation`. Su API permite solicitar permisos y consultar coordenadas del dispositivo. Un ejemplo **ilustrativo** (no necesariamente idéntico al código del repositorio) es:
+xml
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-feature android:name="android.hardware.location.gps" />
 
-```typescript
-import { Geolocation } from '@capacitor/geolocation';
+Cada vez que se cambie código en src/: ionic build y npx cap sync android, luego ▶️ de nuevo.
 
-async function obtenerUbicacion() {
-  const permiso = await Geolocation.requestPermissions();
-  if (permiso.location !== 'granted' && permiso.coarseLocation !== 'granted') {
-    throw new Error('Permiso de ubicación no concedido');
-  }
+Problemas que encontré y cómo los resolví
+Problema	Solución
+Timeout expired en el navegador de la PC	Se agregó un segundo intento con precisión normal (Wi-Fi) y más tiempo de espera; activar la ubicación en Windows.
+ERESOLVE al instalar @capacitor/android@^7	Instalar la versión que coincide con el core: @capacitor/android@7.4.3.
+Gradle no se descargaba (Read timed out)	Subir networkTimeout=120000 en gradle-wrapper.properties o descargar el .zip de Gradle manualmente.
+Missing the following permissions in AndroidManifest.xml	Agregar los permisos de ubicación fuera de <application>.
+Capturas
+Pantalla principal	
+<img width="803" height="1600" alt="image" src="https://github.com/user-attachments/assets/b8a7a401-829a-458e-8abe-8082bcafdcf4" />
 
-  const posicion = await Geolocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 10000
-  });
+Ubicación obtenida	
+<img width="770" height="1600" alt="WhatsApp Image 2026-10-22 at 11 59 20 AM" src="https://github.com/user-attachments/assets/e9bf96b5-388a-4cc1-96cd-6ae3da44b40e" />
 
-  console.log('Latitud:', posicion.coords.latitude);
-  console.log('Longitud:', posicion.coords.longitude);
-  console.log('Precisión (m):', posicion.coords.accuracy);
-}
-```
+Ruta en Google Maps
+<img width="1080" height="839" alt="image" src="https://github.com/user-attachments/assets/9c7c6357-b999-416c-8071-67f3088b4951" />
 
-En el navegador, la geolocalización normalmente requiere `localhost` o HTTPS y autorización del usuario. En Android se deben revisar los permisos de ubicación del manifiesto y las solicitudes en tiempo de ejecución. La precisión depende del GPS, redes disponibles y configuración del dispositivo.
-
-## 📁 Estructura principal
-
-```text
-MiUbicacionAPP_ionic/
-├── .vscode/               # Configuración del editor
-├── src/                   # Código fuente Angular/Ionic
-├── angular.json           # Configuración de Angular
-├── capacitor.config.ts    # Configuración de Capacitor
-├── ionic.config.json      # Configuración de Ionic
-├── package.json           # Dependencias y scripts
-├── package-lock.json      # Versiones resueltas de dependencias
-└── tsconfig.json          # Configuración de TypeScript
-```
-
-## 🧪 Comandos útiles
-
-```bash
-npm start          # Servidor de desarrollo Angular
-npm run build      # Compilación web
-npm test           # Pruebas unitarias
-npm run lint       # Revisión estática del código
-npx cap sync       # Sincroniza archivos web y plugins nativos
-```
-
-## 🔍 Problemas frecuentes
-
-| Problema | Posible solución |
-|---|---|
-| No se obtiene la ubicación | Activar los servicios de ubicación y conceder permisos. |
-| Error de permisos en navegador | Probar desde `localhost` o HTTPS. |
-| Ubicación poco precisa | Probar al aire libre y activar alta precisión. |
-| Android no aparece como plataforma | Instalar `@capacitor/android` y ejecutar `npx cap add android`. |
-| Los cambios no aparecen en Android | Ejecutar `npm run build` y `npx cap sync android`. |
-
-## 📸 Capturas de pantalla
-
-Para documentar la interfaz, crear una carpeta `screenshots/` y agregar imágenes reales de la aplicación:
-
-```markdown
-![Pantalla principal](screenshots/pantalla-principal.png)
-![Ubicación obtenida](screenshots/ubicacion.png)
-```
-
-## 🎓 Propósito académico
-
-Proyecto de referencia para prácticas de desarrollo móvil con Ionic, Angular, Capacitor y acceso a funcionalidades del dispositivo. Se recomienda experimentar con permisos, manejo de errores, precisión y pruebas en dispositivos reales.
-
-## 👨‍🏫 Autor
-
-**Juan Pablo Zaldumbide**  
-Docente — ESFOT, Escuela Politécnica Nacional (EPN)
-
-**Repositorio:** https://github.com/jzaldumbide/MiUbicacionAPP_ionic
-
----
-
-*La información de dependencias y estructura se basa en los archivos públicos visibles del repositorio. Las instrucciones de Android y el ejemplo de geolocalización son guías de uso, no una afirmación de funcionalidades ya implementadas.*
+Aviso de guardado	Archivos .txt
+<img width="764" height="1600" alt="WhatsApp Image 2026-10-22 at 11 59 20 AM (2)" src="https://github.com/user-attachments/assets/872a4c56-3505-4c14-8e6f-cbbdd5825de8" />
