@@ -13,7 +13,8 @@ Proyecto académico desarrollado a partir de la app base MiUbicacionAPP_ionic (I
 
 Además conserva lo de la app base: mostrar latitud/longitud y seguimiento de la ubicación en tiempo real.
 
-🔗 Formato de los enlaces
+
+# 🔗 Formato de los enlaces
 
 Ubicación actual
 
@@ -29,6 +30,7 @@ Las paradas se escriben separadas por | (por ejemplo -0.201452,-78.498124|-0.220
 
 Para obtener las coordenadas de un lugar: en Google Maps haz clic derecho (o mantén presionado en el celular) sobre el sitio y copia los números que aparecen.
 
+
 # ¿Dónde se guardan los .txt?
 
 Cada vez que se presiona un botón de guardar se agrega una línea con fecha, hora y enlace, así el archivo funciona como historial:
@@ -43,7 +45,8 @@ Capacitor 7
 @capacitor/geolocation → posición GPS
 @capacitor/filesystem → escritura de archivos .txt
 TypeScript
-Archivos principales
+
+# Archivos principales
 text
 src/app/
 ├── home/
@@ -63,7 +66,8 @@ ionic serve
 
 En PC la ubicación depende de Windows: activa Configuración → Privacidad y seguridad → Ubicación y permite la ubicación al navegador. Sin Wi-Fi puede aparecer "Timeout expired".
 
-En un celular Android
+
+# En un celular Android
 bash
 npm install @capacitor/android@7.4.3
 ionic build
@@ -73,7 +77,7 @@ npx cap open android
 
 En Android Studio, seleccionar el celular conectado por USB (con Depuración USB activada) y presionar ▶️.
 
-Permisos necesarios — en android/app/src/main/AndroidManifest.xml, antes de </manifest>:
+# Permisos necesarios — en android/app/src/main/AndroidManifest.xml, antes de </manifest>:
 
 xml
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -88,15 +92,20 @@ Timeout expired en el navegador de la PC	Se agregó un segundo intento con preci
 ERESOLVE al instalar @capacitor/android@^7	Instalar la versión que coincide con el core: @capacitor/android@7.4.3.
 Gradle no se descargaba (Read timed out)	Subir networkTimeout=120000 en gradle-wrapper.properties o descargar el .zip de Gradle manualmente.
 Missing the following permissions in AndroidManifest.xml	Agregar los permisos de ubicación fuera de <application>.
+
 # Capturas
 Pantalla principal	
-<img width="803" height="1600" alt="image" src="https://github.com/user-attachments/assets/b8a7a401-829a-458e-8abe-8082bcafdcf4" />
+
+<img width="350" height="1600" alt="image" src="https://github.com/user-attachments/assets/b8a7a401-829a-458e-8abe-8082bcafdcf4" />
 
 Ubicación obtenida	
-<img width="450" alt="WhatsApp Image 2026-10-22 at 11 59 20 AM" src="https://github.com/user-attachments/assets/e9bf96b5-388a-4cc1-96cd-6ae3da44b40e" />
+
+<img width="350" alt="WhatsApp Image 2026-10-22 at 11 59 20 AM" src="https://github.com/user-attachments/assets/e9bf96b5-388a-4cc1-96cd-6ae3da44b40e" />
 
 Ruta en Google Maps
-<img width="450" alt="image" src="https://github.com/user-attachments/assets/9c7c6357-b999-416c-8071-67f3088b4951" />
+
+<img width="350" alt="image" src="https://github.com/user-attachments/assets/9c7c6357-b999-416c-8071-67f3088b4951" />
 
 Aviso de guardado	Archivos .txt
-<img width="450" alt="WhatsApp Image 2026-10-22 at 11 59 20 AM (2)" src="https://github.com/user-attachments/assets/872a4c56-3505-4c14-8e6f-cbbdd5825de8" />
+
+<img width="350" alt="WhatsApp Image 2026-10-22 at 11 59 20 AM (2)" src="https://github.com/user-attachments/assets/872a4c56-3505-4c14-8e6f-cbbdd5825de8" />
